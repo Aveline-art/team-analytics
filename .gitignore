@@ -1,0 +1,16 @@
+
+data.json
+events.json
+issue.json
+pr_issue.json
+timeline.json
+.vscode/settings.json
+tests_and_stuff.py
+all_data.json
+all_data copy.json
+no_data
+pr_data.csv
+issue_data.csv
+authorization.txt
+*.pyc
+.ipynb_checkpoints
