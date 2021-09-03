@@ -14,18 +14,8 @@ headers = {
     'Authorization': f'Bearer {authorization}',
 }
 
-# edit below to next 500 then continue
-start_num = 2189
-end_num = 2193
-
-#2190
-
-# TODO
-#157 has over 100 events in timeline, need to paginate to find all
-
-# test values
-issue_test = 1824
-pr_test = 1902
+start_num = 1
+end_num = 2216
 
 # cross-referenced events are a special case, so they are ignored, linked pr found by reading the pr body
 # opened is not in timeline, must find through issue api
@@ -47,7 +37,6 @@ def main():
                 'timeline': brief_timeline,
                 'title': issue['title'],
                 'is_pr': is_pr,
-                #TODO check that the linked issue actually match the issue_num
                 'linked_issue': find_linked_issue(issue['body']) if is_pr else None,
                 'labels': None if is_pr else [label['name'] for label in issue['labels']],
             }
@@ -70,11 +59,20 @@ def main():
 ##################
 
 def get_timeline(issue_num):
-    timeline_url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/timeline'
-    request = requests.get(url=timeline_url, params={
-        'per_page': 100
-    }, headers=headers)
-    return request.json()
+
+    def helper(issue_num, num=1, store=[], depth_limit=10):
+        timeline_url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/timeline'
+        request = requests.get(url=timeline_url, params={
+            'page': num,
+            'per_page': 100
+        }, headers=headers)
+        result = request.json()
+        store.extend(result)
+        if not result or num == depth_limit:
+            return store
+        return helper(issue_num, num + 1, store)
+    
+    return helper(issue_num)
 
 def filter_timeline(issue, timeline, is_pr):
     if is_pr: 
@@ -85,7 +83,7 @@ def filter_timeline(issue, timeline, is_pr):
     brief_timeline = [['opened', issue['created_at']]]
 
     for event in timeline:
-        if is_linked(event):
+        if is_linked(issue['number'], event):
             brief_event = ['pr_made', event['created_at']]
             brief_timeline.append(brief_event)
         
@@ -99,10 +97,10 @@ def filter_timeline(issue, timeline, is_pr):
 # Helpers #
 ###########
 
-def is_linked(event):
+def is_linked(issue_num, event):
     if event['event'] == 'cross-referenced':
         body = event['source']['issue']['body']
-        if find_linked_issue(body):
+        if find_linked_issue(body) == str(issue_num):
             return True
     
     return False
@@ -112,6 +110,7 @@ def get_issue(issue_num):
     issue_url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}'
     request = requests.get(url=issue_url, headers=headers)
     return request.json()
+
 
 def find_linked_issue(text):
     KEYWORDS = ['close', 'closes', 'closed', 'fix', 'fixes', 'fixed', 'resolve', 'resolves', 'resolved']
@@ -129,9 +128,11 @@ def find_linked_issue(text):
     else:
         return None
 
+
 def write_json(name, data):
     with open(f'{name}.json', 'w') as f:
         f.write(json.dumps(data))
+
 
 def append_json(name, data):
     print('downloading...', end='')
