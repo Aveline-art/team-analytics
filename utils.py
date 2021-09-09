@@ -41,9 +41,8 @@ def get_time_diff_from_issue_df(df: pd.DataFrame, col_name_1: str, col_name_2: s
     cleaned_df[new_col_name] = two - one
     
     # Compute the average time difference per year, per month.
-    df = cleaned_df
-    total = df.groupby([df[col_name_2].dt.year, df[col_name_2].dt.month])[new_col_name].sum()
-    amount = df.groupby([df[col_name_2].dt.year, df[col_name_2].dt.month])[new_col_name].count()
+    total = cleaned_df.groupby([cleaned_df[col_name_2].dt.year, cleaned_df[col_name_2].dt.month])[new_col_name].sum()
+    amount = cleaned_df.groupby([cleaned_df[col_name_2].dt.year, cleaned_df[col_name_2].dt.month])[new_col_name].count()
     monthly_total = total / amount
     
     # Format data to fill in empty data, and correct the datatypes.

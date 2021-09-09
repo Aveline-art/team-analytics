@@ -45,7 +45,7 @@ def convert_to_csv(data):
         except:
             no_data.append(key)
             continue
-    create_txt('no_data', no_data)
+    create_txt('no_data.txt', no_data)
 
 ###########
 # Helpers #
