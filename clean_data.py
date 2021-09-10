@@ -56,7 +56,7 @@ def filter_pr(key, val):
     dicti[sb.issue_num] = key
     dicti[sb.linked_issue] = val[sb.linked_issue]
     perform_func(lambda: get_pr_opened(val[sb.timeline]), dicti, sb.opened)
-    perform_func(lambda: get_pr_reviewed(val[sb.timeline]), dicti, sb.assigned)
+    perform_func(lambda: get_pr_reviewed(val[sb.timeline]), dicti, sb.reviewed)
     perform_func(lambda: get_pr_closed(val[sb.timeline]), dicti, sb.closed)
     perform_func(lambda: get_pr_num_reviewed(val[sb.timeline]), dicti, sb.review_count)
     dicti[sb.labels] = sb.join_delimiter.join(val[sb.labels])

@@ -14,9 +14,11 @@ headers = {
     'Accept': 'application/vnd.github.mockingbird-preview+json',
     'Authorization': f'Bearer {authorization}',
 }
-start_num = 1671
-end_num = 1837
-outfile = 'hahah'
+
+#stopped 1484
+start_num = 1481
+end_num = 2244
+outfile = 'all_data'
 
 # test issue: 1671
 # test pr: 1837
