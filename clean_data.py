@@ -39,8 +39,12 @@ def filter_issue(key, val):
     dicti[sb.issue_num] = key
     dicti[sb.linked_issue] = val[sb.linked_issue]
     perform_func(lambda: get_issue_opened(val[sb.timeline]), dicti, sb.opened)
-    perform_func(lambda: get_issue_assigned(val[sb.timeline], str(val[sb.linked_issue])), dicti, sb.assigned)
-    perform_func(lambda: get_issue_pr_made(val[sb.timeline], str(val[sb.linked_issue])), dicti, sb.pr_made)
+    if val[sb.linked_issue]:
+        perform_func(lambda: get_issue_assigned(val[sb.timeline], str(val[sb.linked_issue])), dicti, sb.assigned)
+        perform_func(lambda: get_issue_pr_made(val[sb.timeline], str(val[sb.linked_issue])), dicti, sb.pr_made)
+    else:
+        dicti[sb.assigned] = None
+        dicti[sb.pr_made] = None
     perform_func(lambda: get_issue_closed(val[sb.timeline]), dicti, sb.closed)
     dicti[sb.labels] = sb.join_delimiter.join(val[sb.labels])
 
