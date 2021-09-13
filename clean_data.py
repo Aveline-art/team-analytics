@@ -14,12 +14,12 @@ import event_filter as ef
 data = None
 
 
-def main(file, outfile_issue='issue_data', outfile_pr='pr_data', outfile_no='no_data.txt'):
+def main(file, outfile_issue='issue_data.csv', outfile_pr='pr_data.csv', outfile_no='no_data.txt'):
     with open(file, 'r') as f:
         data = json.load(f)
 
     csv_filter = Filter(data)
-    csv_filter.start_filter()
+    csv_filter.start_filter(outfile_issue, outfile_pr, outfile_no)
 
 
 class Filter():
@@ -67,15 +67,15 @@ class Filter():
         dicti = {}
         dicti[sb.issue_num] = key
         dicti[sb.linked_issue] = val[sb.linked_issue]
-        perform_func(lambda: ef.get_issue_opened(val[sb.timeline]), dicti, sb.opened)
+        dicti[sb.opened] = ef.get_issue_opened(val[sb.timeline])
         if val[sb.linked_issue]:
             pr_author_id = self.data[str(val[sb.linked_issue])][sb.creator_id]
-            perform_func(lambda: ef.get_issue_assigned(val[sb.timeline], pr_author_id), dicti, sb.assigned)
-            perform_func(lambda: ef.get_issue_pr_made(val[sb.timeline], pr_author_id), dicti, sb.pr_made)
+            dicti[sb.assigned] = ef.get_issue_assigned(val[sb.timeline], pr_author_id)
+            dicti[sb.pr_made] = ef.get_issue_pr_made(val[sb.timeline], pr_author_id)
         else:
             dicti[sb.assigned] = None
             dicti[sb.pr_made] = None
-        perform_func(lambda: ef.get_issue_closed(val[sb.timeline]), dicti, sb.closed)
+        dicti[sb.closed] = ef.get_issue_closed(val[sb.timeline])
         dicti[sb.labels] = sb.join_delimiter.join(val[sb.labels])
 
         return dicti
@@ -84,10 +84,10 @@ class Filter():
         dicti = {}
         dicti[sb.issue_num] = key
         dicti[sb.linked_issue] = val[sb.linked_issue]
-        perform_func(lambda: ef.get_pr_opened(val[sb.timeline]), dicti, sb.opened)
-        perform_func(lambda: ef.get_pr_reviewed(val[sb.timeline]), dicti, sb.reviewed)
-        perform_func(lambda: ef.get_pr_closed(val[sb.timeline]), dicti, sb.closed)
-        perform_func(lambda: ef.get_pr_num_reviewed(val[sb.timeline]), dicti, sb.review_count)
+        dicti[sb.opened] = ef.get_pr_opened(val[sb.timeline])
+        dicti[sb.review_count] = ef.get_pr_reviewed(val[sb.timeline])
+        dicti[sb.closed] = ef.get_pr_closed(val[sb.timeline])
+        dicti[sb.review_count] = ef.get_pr_num_reviewed(val[sb.timeline])
         dicti[sb.labels] = sb.join_delimiter.join(val[sb.labels])
 
         return dicti
