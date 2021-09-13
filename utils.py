@@ -1,6 +1,7 @@
 # Imports
 import numpy as np
 import pandas as pd
+import string_boutique as sb
 
 #############
 ### Mains ###
@@ -32,7 +33,7 @@ def get_time_diff_from_issue_df(df: pd.DataFrame, col_name_1: str, col_name_2: s
 
     # Clean columns.
     cleaned_df = copy_df.dropna(subset=[col_name_1, col_name_2])
-    cleaned_df = cleaned_df[cleaned_df['labels'].apply(lambda x: filter_by_labels(x, in_labels, out_labels))]
+    cleaned_df = cleaned_df[cleaned_df[sb.labels].apply(lambda x: filter_by_labels(x, in_labels, out_labels))]
     
     # Create new column that consists of the time difference between one column and another.
     one = cleaned_df[col_name_1]
@@ -82,7 +83,7 @@ def get_count_from_issue_df(df: pd.DataFrame, col: str, in_labels: list=[], out_
 
     # Clean columns.
     cleaned_df = copy_df.dropna(subset=[col])
-    cleaned_df = cleaned_df[cleaned_df['labels'].apply(lambda x: filter_by_labels(x, in_labels, out_labels))]
+    cleaned_df = cleaned_df[cleaned_df[sb.labels].apply(lambda x: filter_by_labels(x, in_labels, out_labels))]
 
     # Format data to account for empty months and datatypes.
     total = cleaned_df.groupby([cleaned_df[col].dt.year, cleaned_df[col].dt.month])[col].count()
@@ -118,7 +119,7 @@ def get_time_from_issue_df(df, col_name_1, col_name_2, in_labels=[], out_labels=
 
     # Clean columns.
     cleaned_df = copy_df.dropna(subset=[col_name_1, col_name_2])
-    cleaned_df = cleaned_df[cleaned_df['labels'].apply(lambda x: filter_by_labels(x, in_labels, out_labels))]
+    cleaned_df = cleaned_df[cleaned_df[sb.labels].apply(lambda x: filter_by_labels(x, in_labels, out_labels))]
 
     # Find time difference between two columns per row.
     one = cleaned_df[col_name_1]
@@ -210,6 +211,6 @@ def examine_data(df: pd.DataFrame, col_name_1: str, col_name_2: str, in_labels: 
 
     # Clean columns.
     cleaned_df = copy_df.dropna(subset=[col_name_1, col_name_2])
-    cleaned_df = cleaned_df[cleaned_df['labels'].apply(lambda x: filter_by_labels(x, in_labels, out_labels))]
+    cleaned_df = cleaned_df[cleaned_df[sb.labels].apply(lambda x: filter_by_labels(x, in_labels, out_labels))]
     pd.set_option("display.max_rows", rows)
     return func(cleaned_df, rows)
