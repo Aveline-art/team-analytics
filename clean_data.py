@@ -10,10 +10,6 @@ import event_filter as ef
 # test issue: 1671
 # test pr: 1837
 
-# globals
-data = None
-
-
 def main(file, outfile_issue='issue_data.csv', outfile_pr='pr_data.csv', outfile_no='no_data.txt'):
     with open(file, 'r') as f:
         data = json.load(f)
@@ -96,7 +92,6 @@ class Filter():
 ##################
 # Main Functions #
 ##################
-
 
 def write_to_csv(file, lst):
     with open(file, 'w', newline='') as f:
