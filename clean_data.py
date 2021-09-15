@@ -81,7 +81,7 @@ class Filter():
         dicti[sb.issue_num] = key
         dicti[sb.linked_issue] = val[sb.linked_issue]
         dicti[sb.opened] = ef.get_pr_opened(val[sb.timeline])
-        dicti[sb.review_count] = ef.get_pr_reviewed(val[sb.timeline])
+        dicti[sb.reviewed] = ef.get_pr_reviewed(val[sb.timeline])
         dicti[sb.closed] = ef.get_pr_closed(val[sb.timeline])
         dicti[sb.review_count] = ef.get_pr_num_reviewed(val[sb.timeline])
         dicti[sb.labels] = sb.join_delimiter.join(val[sb.labels])
